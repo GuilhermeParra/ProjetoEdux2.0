@@ -17,6 +17,10 @@ namespace ProjetoEdux2._0.Controllers
         private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
 
         // GET: api/Categoria
+        /// <summary>
+        /// Mostra as categorias 
+        /// </summary>
+        /// <returns>retorna todas as categorias cadastradas</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoria()
         {
@@ -24,6 +28,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // GET: api/Categoria/5
+        /// <summary>
+        /// mostra uma unica categoria
+        /// </summary>
+        /// <param name="id">id da categoria</param>
+        /// <returns>retorna uma categoria</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Categoria>> GetCategoria(Guid id)
         {
@@ -40,6 +49,12 @@ namespace ProjetoEdux2._0.Controllers
         // PUT: api/Categoria/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// altera determinada categoria
+        /// </summary>
+        /// <param name="id">id da categora </param>
+        /// <param name="categoria">objeto com alteraçoes</param>
+        /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategoria(Guid id, Categoria categoria)
         {
@@ -72,6 +87,11 @@ namespace ProjetoEdux2._0.Controllers
         // POST: api/Categoria
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Cadastra uma categoria
+        /// </summary>
+        /// <param name="categoria">nome da categoria</param>
+        /// <returns>retorna objeto cadastrado</returns>
         [HttpPost]
         public async Task<ActionResult<Categoria>> PostCategoria(Categoria categoria)
         {
@@ -82,6 +102,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // DELETE: api/Categoria/5
+        /// <summary>
+        /// exclui uma categoria
+        /// </summary>
+        /// <param name="id">id da categoria</param>
+        /// <returns>retorna uma categoria</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<Categoria>> DeleteCategoria(Guid id)
         {

@@ -89,8 +89,14 @@ namespace ProjetoEdux2._0.Repositories
                 throw new Exception("Usuario não encontrado");
 
             }
+                
+                usuarioTemp.Nome = usuario.Nome;
+                usuarioTemp.Email = usuario.Email;
+                usuarioTemp.Senha = usuario.Senha;
+                usuarioTemp.DataCadastro = usuario.DataCadastro;
+                usuarioTemp.DataUltimoAcesso = usuario.DataUltimoAcesso;
+                
 
-            usuarioTemp.Nome = usuario.Nome;
 
 
             //Altera usuario no contexto

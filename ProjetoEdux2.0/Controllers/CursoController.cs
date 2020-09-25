@@ -7,51 +7,53 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
-using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuarioController : ControllerBase
+    public class CursoController : ControllerBase
     {
-        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
+        private readonly ProjetoSenaiiContext _context;
 
-        UsuarioRepository usu = new UsuarioRepository();
-
-        // GET: api/Usuarios
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuario()
+        public CursoController(ProjetoSenaiiContext context)
         {
-            return await _context.Usuario.ToListAsync();
+            _context = context;
         }
 
-        // GET: api/Usuarios/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Usuario>> GetUsuario(Guid id)
+        // GET: api/Curso
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Curso>>> GetCurso()
         {
-            var usuario = await _context.Usuario.FindAsync(id);
+            return await _context.Curso.ToListAsync();
+        }
 
-            if (usuario == null)
+        // GET: api/Curso/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Curso>> GetCurso(Guid id)
+        {
+            var curso = await _context.Curso.FindAsync(id);
+
+            if (curso == null)
             {
                 return NotFound();
             }
 
-            return usuario;
+            return curso;
         }
 
-        // PUT: api/Usuarios/5
+        // PUT: api/Curso/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(Guid id, Usuario usuario)
+        public async Task<IActionResult> PutCurso(Guid id, Curso curso)
         {
-            if (id != usuario.IdUsuario)
+            if (id != curso.IdCurso)
             {
                 return BadRequest();
             }
 
-            _context.Entry(usuario).State = EntityState.Modified;
+            _context.Entry(curso).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +61,7 @@ namespace ProjetoEdux2._0.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UsuarioExists(id))
+                if (!CursoExists(id))
                 {
                     return NotFound();
                 }
@@ -72,38 +74,37 @@ namespace ProjetoEdux2._0.Controllers
             return NoContent();
         }
 
-        // POST: api/Usuarios
+        // POST: api/Curso
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+        public async Task<ActionResult<Curso>> PostCurso(Curso curso)
         {
-
-            _context.Usuario.Add(usuario);
+            _context.Curso.Add(curso);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUsuario", new { id = usuario.IdUsuario }, usuario);
+            return CreatedAtAction("GetCurso", new { id = curso.IdCurso }, curso);
         }
 
-        // DELETE: api/Usuarios/5
+        // DELETE: api/Curso/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Usuario>> DeleteUsuario(Guid id)
+        public async Task<ActionResult<Curso>> DeleteCurso(Guid id)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
-            if (usuario == null)
+            var curso = await _context.Curso.FindAsync(id);
+            if (curso == null)
             {
                 return NotFound();
             }
 
-            _context.Usuario.Remove(usuario);
+            _context.Curso.Remove(curso);
             await _context.SaveChangesAsync();
 
-            return usuario;
+            return curso;
         }
 
-        private bool UsuarioExists(Guid id)
+        private bool CursoExists(Guid id)
         {
-            return _context.Usuario.Any(e => e.IdUsuario == id);
+            return _context.Curso.Any(e => e.IdCurso == id);
         }
     }
 }

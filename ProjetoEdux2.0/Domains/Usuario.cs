@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace ProjetoEdux2._0.Domains
 {
@@ -20,10 +23,15 @@ namespace ProjetoEdux2._0.Domains
         public DateTime DataCadastro { get; set; }
         public DateTime DataUltimoAcesso { get; set; }
         public Guid? IdPerfil { get; set; }
-
+        
+        [JsonIgnore]
         public virtual Perfil IdPerfilNavigation { get; set; }
+
         public virtual ICollection<AlunoTurma> AlunoTurma { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Curtida> Curtida { get; set; }
+
+        [JsonIgnore]
         public virtual ICollection<Dica> Dica { get; set; }
         public virtual ICollection<ProfessorTurma> ProfessorTurma { get; set; }
     }
