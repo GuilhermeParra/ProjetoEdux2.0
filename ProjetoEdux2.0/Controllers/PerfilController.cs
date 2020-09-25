@@ -14,12 +14,7 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class PerfilController : ControllerBase
     {
-        private readonly ProjetoSenaiiContext _context;
-
-        public PerfilController(ProjetoSenaiiContext context)
-        {
-            _context = context;
-        }
+        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
 
         // GET: api/Perfil
         [HttpGet]
