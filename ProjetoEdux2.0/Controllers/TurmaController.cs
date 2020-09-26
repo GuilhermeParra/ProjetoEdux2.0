@@ -17,6 +17,10 @@ namespace ProjetoEdux2._0.Controllers
         private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
 
         // GET: api/Turma
+        /// <summary>
+        /// mostra todas as turmas
+        /// </summary>
+        /// <returns>retorna todas as turmas cadastradas</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Turma>>> GetTurma()
         {
@@ -24,6 +28,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // GET: api/Turma/5
+        /// <summary>
+        /// mostra as turmas
+        /// </summary>
+        /// <param name="id">id da turma</param>
+        /// <returns>retorna uma turma</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Turma>> GetTurma(Guid id)
         {
@@ -40,6 +49,12 @@ namespace ProjetoEdux2._0.Controllers
         // PUT: api/Turma/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// mostra uma unica turma
+        /// </summary>
+        /// <param name="id">id da turma</param>
+        /// <param name="turma">objeto com alterações</param>
+        /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTurma(Guid id, Turma turma)
         {
@@ -72,6 +87,11 @@ namespace ProjetoEdux2._0.Controllers
         // POST: api/Turma
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Cadastra uma turma
+        /// </summary>
+        /// <param name="turma">nome de turma</param>
+        /// <returns>retorna objeto cadastrado</returns>
         [HttpPost]
         public async Task<ActionResult<Turma>> PostTurma(Turma turma)
         {
@@ -82,6 +102,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // DELETE: api/Turma/5
+        /// <summary>
+        /// exclui uma turma
+        /// </summary>
+        /// <param name="id">id da turma</param>
+        /// <returns>retorna uma turma</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<Turma>> DeleteTurma(Guid id)
         {
@@ -96,7 +121,7 @@ namespace ProjetoEdux2._0.Controllers
 
             return turma;
         }
-
+        
         private bool TurmaExists(Guid id)
         {
             return _context.Turma.Any(e => e.IdTurma == id);

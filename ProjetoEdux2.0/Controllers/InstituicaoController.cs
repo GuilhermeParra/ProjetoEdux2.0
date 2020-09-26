@@ -14,14 +14,13 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class InstituicaoController : ControllerBase
     {
-        private readonly ProjetoSenaiiContext _context;
-
-        public InstituicaoController(ProjetoSenaiiContext context)
-        {
-            _context = context;
-        }
+        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
 
         // GET: api/Instituicao
+        /// <summary>
+        /// mostra a insituição
+        /// </summary>
+        /// <returns>retorna todas as instituições</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Instituicao>>> GetInstituicao()
         {
@@ -29,6 +28,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // GET: api/Instituicao/5
+        /// <summary>
+        /// mostra uma unica instituição
+        /// </summary>
+        /// <param name="id">id da instituição</param>
+        /// <returns>retorna uma instuituição</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Instituicao>> GetInstituicao(Guid id)
         {
@@ -45,6 +49,12 @@ namespace ProjetoEdux2._0.Controllers
         // PUT: api/Instituicao/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// altera determinada instituição
+        /// </summary>
+        /// <param name="id">id da insituição</param>
+        /// <param name="instituicao">Objeto com alterações</param>
+        /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutInstituicao(Guid id, Instituicao instituicao)
         {
@@ -77,6 +87,11 @@ namespace ProjetoEdux2._0.Controllers
         // POST: api/Instituicao
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Cadastra uma instituição
+        /// </summary>
+        /// <param name="instituicao">Nome da insituição</param>
+        /// <returns>retorna o objeto cadastrado</returns>
         [HttpPost]
         public async Task<ActionResult<Instituicao>> PostInstituicao(Instituicao instituicao)
         {
@@ -87,6 +102,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // DELETE: api/Instituicao/5
+        /// <summary>
+        /// exclui uma instituição
+        /// </summary>
+        /// <param name="id">id da instituição</param>
+        /// <returns>retorna uma insituição</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<Instituicao>> DeleteInstituicao(Guid id)
         {

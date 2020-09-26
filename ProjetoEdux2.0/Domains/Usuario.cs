@@ -28,10 +28,10 @@ namespace ProjetoEdux2._0.Domains
         public virtual Perfil IdPerfilNavigation { get; set; }
 
         public virtual ICollection<AlunoTurma> AlunoTurma { get; set; }
-        [JsonIgnore]
+        
         public virtual ICollection<Curtida> Curtida { get; set; }
 
-        [JsonIgnore]
+        
         public virtual ICollection<Dica> Dica { get; set; }
         public virtual ICollection<ProfessorTurma> ProfessorTurma { get; set; }
     }

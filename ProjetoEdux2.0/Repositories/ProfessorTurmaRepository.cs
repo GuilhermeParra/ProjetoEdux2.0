@@ -11,6 +11,16 @@ namespace ProjetoEdux2._0.Repositories
     public class ProfessorTurmaRepository : IProfessorTurma
     {
         private readonly ProjetoSenaiiContext _ctx;
+
+        public ProfessorTurmaRepository()
+        {
+            _ctx = new ProjetoSenaiiContext();
+        }
+
+        /// <summary>
+        /// Cadastra um professor
+        /// </summary>
+        /// <param name="professorTurma">Objeto de Adicionar</param>
         public void Adicionar(ProfessorTurma professorTurma)
         {
             try
@@ -27,6 +37,11 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Busca o professor pelo Id
+        /// </summary>
+        /// <param name="id">Objeto de BuscarPorId</param>
+        /// <returns>O professor buscado</returns>
         public ProfessorTurma BuscarPorId(Guid id)
         {
             try
@@ -40,6 +55,11 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Busca o professor pelo nome
+        /// </summary>
+        /// <param name="descricao">Objeto de BuscarPorNome</param>
+        /// <returns>O professor buscado pelo nome</returns>
         public List<ProfessorTurma> BuscarPorNome(string descricao)
         {
             try
@@ -53,6 +73,10 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Edita o professor cadastrado
+        /// </summary>
+        /// <param name="professorTurma">Objeto de Editar</param>
         public void Editar(ProfessorTurma professorTurma)
         {
             try
@@ -82,6 +106,10 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Lista todos os professores
+        /// </summary>
+        /// <returns>Todos os professor listados</returns>
         public List<ProfessorTurma> Listar()
         {
             try
@@ -94,6 +122,10 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Remove os professores
+        /// </summary>
+        /// <param name="id">Objeto de Remover</param>
         public void Remover(Guid id)
         {
             try

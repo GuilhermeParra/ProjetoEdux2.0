@@ -13,6 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using System.IO;
 
 namespace ProjetoEdux2._0
 {
@@ -29,6 +32,30 @@ namespace ProjetoEdux2._0
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Edux",
+                    Description = "Um simples modelo API sobre ASP.NET Core Web API",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Equipe SENAI",
+                        Email = "samanta.melissa13@gmail.com",
+                        Url = new Uri("https://twitter.com/"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "General",
+                        Url = new Uri("https://example.com/license"),
+                    }
+                });
+            });
+
             // JWT
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -60,7 +87,17 @@ namespace ProjetoEdux2._0
 
             app.UseAuthentication();
 
-            app.UseAuthorization(); 
+            app.UseAuthorization();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            app.UseSwagger();
 
             app.UseEndpoints(endpoints =>
             {

@@ -14,5 +14,5 @@ namespace ProjetoEdux2._0.Domains
         public virtual Turma IdTurmaNavigation { get; set; }
         [JsonIgnore]
         public virtual Usuario IdUsuarioNavigation { get; set; }
-    }
+    } 
 }

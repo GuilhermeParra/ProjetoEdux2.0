@@ -17,9 +17,12 @@ namespace ProjetoEdux2._0.Controllers
     {
         private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
 
-        UsuarioRepository usu = new UsuarioRepository();
 
         // GET: api/Usuarios
+        /// <summary>
+        /// Mostra os usuarios
+        /// </summary>
+        /// <returns>retorna todos os usuarios</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuario()
         {
@@ -27,6 +30,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // GET: api/Usuarios/5
+        /// <summary>
+        /// mostra um usuario
+        /// </summary>
+        /// <param name="id">id do usuario</param>
+        /// <returns>retorna um usuario</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuario>> GetUsuario(Guid id)
         {
@@ -43,6 +51,12 @@ namespace ProjetoEdux2._0.Controllers
         // PUT: api/Usuarios/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// altera determinado usuario
+        /// </summary>
+        /// <param name="id">id do usuario</param>
+        /// <param name="usuario">objeto com alterações</param>
+        /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUsuario(Guid id, Usuario usuario)
         {
@@ -75,6 +89,11 @@ namespace ProjetoEdux2._0.Controllers
         // POST: api/Usuarios
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Cadastra um usuario
+        /// </summary>
+        /// <param name="usuario">nome do usuario</param>
+        /// <returns>retorna objeto cadastrado</returns>
         [HttpPost]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
@@ -86,6 +105,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // DELETE: api/Usuarios/5
+        /// <summary>
+        /// exclui um usuario
+        /// </summary>
+        /// <param name="id">id do usuario</param>
+        /// <returns>retorna um usuario</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<Usuario>> DeleteUsuario(Guid id)
         {
@@ -100,7 +124,7 @@ namespace ProjetoEdux2._0.Controllers
 
             return usuario;
         }
-
+        
         private bool UsuarioExists(Guid id)
         {
             return _context.Usuario.Any(e => e.IdUsuario == id);

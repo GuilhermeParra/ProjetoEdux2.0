@@ -12,58 +12,58 @@ namespace ProjetoEdux2._0.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CursoController : ControllerBase
+    public class DicaController : ControllerBase
     {
         private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
 
-        // GET: api/Curso
+        // GET: api/Dica
         /// <summary>
-        /// Mostra os cursos
+        /// Mostra as dicas
         /// </summary>
-        /// <returns>retorna os cursos cadastrados</returns>
+        /// <returns>retorna todas as dicas</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Curso>>> GetCurso()
+        public async Task<ActionResult<IEnumerable<Dica>>> GetDica()
         {
-            return await _context.Curso.ToListAsync();
+            return await _context.Dica.ToListAsync();
         }
 
-        // GET: api/Curso/5
+        // GET: api/Dica/5
         /// <summary>
-        /// mostra uma unica categoria
+        /// alterna uma determinada dica
         /// </summary>
-        /// <param name="id">id do curso</param>
-        /// <returns>retorna um curso</returns>
+        /// <param name="id">id da dica</param>
+        /// <returns>tretorna uma dica</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Curso>> GetCurso(Guid id)
+        public async Task<ActionResult<Dica>> GetDica(Guid id)
         {
-            var curso = await _context.Curso.FindAsync(id);
+            var dica = await _context.Dica.FindAsync(id);
 
-            if (curso == null)
+            if (dica == null)
             {
                 return NotFound();
             }
 
-            return curso;
+            return dica;
         }
 
-        // PUT: api/Curso/5
+        // PUT: api/Dica/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         /// <summary>
-        /// edita os cursos cadastrados
+        /// altera uma determinada curtida
         /// </summary>
-        /// <param name="id">id do curso</param>
-        /// <param name="curso">Objeto com alterações</param>
-        /// <returns>O curso editado</returns>
+        /// <param name="id">id da dica</param>
+        /// <param name="dica">objeto com aletrações</param>
+        /// <returns>retorna o produto alterado</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCurso(Guid id, Curso curso)
+        public async Task<IActionResult> PutDica(Guid id, Dica dica)
         {
-            if (id != curso.IdCurso)
+            if (id != dica.IdDica)
             {
                 return BadRequest();
             }
 
-            _context.Entry(curso).State = EntityState.Modified;
+            _context.Entry(dica).State = EntityState.Modified;
 
             try
             {
@@ -71,7 +71,7 @@ namespace ProjetoEdux2._0.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CursoExists(id))
+                if (!DicaExists(id))
                 {
                     return NotFound();
                 }
@@ -84,47 +84,47 @@ namespace ProjetoEdux2._0.Controllers
             return NoContent();
         }
 
-        // POST: api/Curso
+        // POST: api/Dica
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         /// <summary>
-        /// cadastra um novo cursp
+        /// Cadastra uma dica
         /// </summary>
-        /// <param name="curso">Objeto com alterações</param>
+        /// <param name="dica">nome da dica</param>
         /// <returns>retorna o objeto cadastrado</returns>
         [HttpPost]
-        public async Task<ActionResult<Curso>> PostCurso(Curso curso)
+        public async Task<ActionResult<Dica>> PostDica(Dica dica)
         {
-            _context.Curso.Add(curso);
+            _context.Dica.Add(dica);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCurso", new { id = curso.IdCurso }, curso);
+            return CreatedAtAction("GetDica", new { id = dica.IdDica }, dica);
         }
 
-        // DELETE: api/Curso/5
+        // DELETE: api/Dica/5
         /// <summary>
-        /// Deleta o
+        /// eclui uma dica
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Retorna o objeto deletado</returns>
+        /// <param name="id">id da dica</param>
+        /// <returns>retorna uma dica</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Curso>> DeleteCurso(Guid id)
+        public async Task<ActionResult<Dica>> DeleteDica(Guid id)
         {
-            var curso = await _context.Curso.FindAsync(id);
-            if (curso == null)
+            var dica = await _context.Dica.FindAsync(id);
+            if (dica == null)
             {
                 return NotFound();
             }
 
-            _context.Curso.Remove(curso);
+            _context.Dica.Remove(dica);
             await _context.SaveChangesAsync();
 
-            return curso;
+            return dica;
         }
-        
-        private bool CursoExists(Guid id)
+
+        private bool DicaExists(Guid id)
         {
-            return _context.Curso.Any(e => e.IdCurso == id);
+            return _context.Dica.Any(e => e.IdDica == id);
         }
     }
 }

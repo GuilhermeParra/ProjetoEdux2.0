@@ -19,6 +19,11 @@ namespace ProjetoEdux2._0.Repositories
         }
         #region Leitura
 
+        /// <summary>
+        /// Busca o usuario pelo nome
+        /// </summary>
+        /// <param name="nome">Objeto de BuscarPorNome</param>
+        /// <returns>O usuario buscado</returns>
         public List<Usuario> BuscarPorNome(string nome)
         {
             try
@@ -31,6 +36,11 @@ namespace ProjetoEdux2._0.Repositories
 
             }
         }
+
+        /// <summary>
+        /// Lista todos os usuarios cadastrados
+        /// </summary>
+        /// <returns>Uma lista de usuarios</returns>
         public List<Usuario> Listar()
         {
             try
@@ -43,6 +53,11 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Busca o usuario pelo Id
+        /// </summary>
+        /// <param name="id">Objeto de BuscarPorId</param>
+        /// <returns>O usuario buscado pelo id</returns>
         public Usuario BuscarPorId(Guid id)
         {
             try
@@ -59,6 +74,11 @@ namespace ProjetoEdux2._0.Repositories
 
 
         #region Gravação
+
+        /// <summary>
+        /// Cadastra um novo usuario
+        /// </summary>
+        /// <param name="usuario">Objeto de Adicionar</param>
         public void Adicionar(Usuario usuario)
         {
             try
@@ -77,6 +97,10 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Edita o usuario cadastrado
+        /// </summary>
+        /// <param name="usuario">Objeto de Editar</param>
         public void Editar(Usuario usuario)
         {
             try { 
@@ -110,10 +134,10 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
     
-
-
-        
-
+        /// <summary>
+        /// Remove um usuario pelo id
+        /// </summary>
+        /// <param name="id">Objeto de Remover</param>
         public void Remover(Guid id)
         {
             try

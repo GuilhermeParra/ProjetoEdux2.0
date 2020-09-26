@@ -8,99 +8,97 @@ using System.Threading.Tasks;
 
 namespace ProjetoEdux2._0.Repositories
 {
-    public class PerfilRepository : IPerfil
+    public class CurtidaRepository : ICurtida
     {
         private readonly ProjetoSenaiiContext _ctx;
 
-        public PerfilRepository()
+        public CurtidaRepository()
         {
             _ctx = new ProjetoSenaiiContext();
         }
-        #region Leitura
-
         /// <summary>
-        /// Busca um perfil pelo Id
+        /// Adiciona uma curtida
         /// </summary>
-        /// <param name="id">Objeto de BuscarPorId</param>
-        /// <returns>O perfil buscado</returns>
-        public Perfil BuscarPorId(Guid id)
+        /// <param name="curtida">objeto curtida</param>
+        public void Adicionar(Curtida curtida)
         {
             try
             {
-                return _ctx.Perfil.FirstOrDefault(c => c.IdPerfil == id);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Lista todos os perfis
-        /// </summary>
-        /// <returns>Uma lista de perfis</returns>
-        public List<Perfil> Listar()
-        {
-            try
-            {
-                return _ctx.Perfil.ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-        #endregion
-
-        #region Gravação
-
-        /// <summary>
-        /// Edita os perfis
-        /// </summary>
-        /// <param name="perfil">Objeto de editar</param>
-        public void Editar(Perfil perfil)
-        {
-            try
-            {
-                Perfil PerfilPerm = BuscarPorId(perfil.IdPerfil);
+                //adiciona um objeto , pode se acionar mais de uma vez
+                _ctx.Curtida.Add(curtida);
 
 
-
-                if (PerfilPerm == null)
-                    throw new Exception("Perfil não encontrado");
-
-
-                PerfilPerm.Permissao = perfil.Permissao;
-
-                _ctx.Perfil.Update(PerfilPerm);
+                //salvar no db
                 _ctx.SaveChanges();
-            
             }
             catch (Exception ex)
             {
+
                 throw new Exception(ex.Message);
             }
         }
 
         /// <summary>
-        /// Remove um perfil 
+        /// Busca uma curtida por id
         /// </summary>
-        /// <param name="id">Objeto de Remover</param>
+        /// <param name="id"></param>
+        /// <returns>Uma curtida</returns>
+        public Curtida BuscarPorId(Guid id)
+        {
+            try
+            {
+
+                return _ctx.Curtida.Find(id);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Lista todas as curtidas  
+        /// </summary>
+        /// <returns>Lista de curtidas</returns>
+        public List<Curtida> Listar()
+        {
+            try
+            {
+                return _ctx.Curtida.ToList();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Remove uma curtida pelo id
+        /// </summary>
+        /// <param name="id">Id da curtida</param>
         public void Remover(Guid id)
         {
             try
             {
-                Perfil perfilPerm = BuscarPorId(id);
+                Curtida curtidaTemp = BuscarPorId(id);
+                if (curtidaTemp == null)
+                    throw new Exception("Dica não encontrada ");
 
-                _ctx.Perfil.Remove(perfilPerm);
+
+
+                _ctx.Curtida.Remove(curtidaTemp);
 
                 _ctx.SaveChanges();
             }
             catch (Exception ex)
             {
+
                 throw new Exception(ex.Message);
             }
         }
-        #endregion
     }
 }

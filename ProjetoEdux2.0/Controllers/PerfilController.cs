@@ -17,6 +17,10 @@ namespace ProjetoEdux2._0.Controllers
         private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
 
         // GET: api/Perfil
+        /// <summary>
+        /// mostra os perfis
+        /// </summary>
+        /// <returns>retorna todas os perfis cadastrados</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Perfil>>> GetPerfil()
         {
@@ -24,6 +28,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // GET: api/Perfil/5
+        /// <summary>
+        /// mostra um unico perfil
+        /// </summary>
+        /// <param name="id">id do perfil</param>
+        /// <returns>retorna um perfil</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Perfil>> GetPerfil(Guid id)
         {
@@ -40,6 +49,12 @@ namespace ProjetoEdux2._0.Controllers
         // PUT: api/Perfil/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// altera determinado perfil
+        /// </summary>
+        /// <param name="id">id do perfil</param>
+        /// <param name="perfil">objeto com alterações</param>
+        /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPerfil(Guid id, Perfil perfil)
         {
@@ -72,6 +87,11 @@ namespace ProjetoEdux2._0.Controllers
         // POST: api/Perfil
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// cadastra um perfil
+        /// </summary>
+        /// <param name="perfil">nome do perfil</param>
+        /// <returns>retorna o objeto alterado</returns>
         [HttpPost]
         public async Task<ActionResult<Perfil>> PostPerfil(Perfil perfil)
         {
@@ -82,6 +102,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // DELETE: api/Perfil/5
+        /// <summary>
+        /// exclui um perfil
+        /// </summary>
+        /// <param name="id">id do perfil</param>
+        /// <returns>retorna um perfil</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<Perfil>> DeletePerfil(Guid id)
         {

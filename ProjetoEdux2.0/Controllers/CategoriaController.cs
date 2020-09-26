@@ -52,7 +52,7 @@ namespace ProjetoEdux2._0.Controllers
         /// <summary>
         /// altera determinada categoria
         /// </summary>
-        /// <param name="id">id da categora </param>
+        /// <param name="id">id da categoria </param>
         /// <param name="categoria">objeto com alteraçoes</param>
         /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]

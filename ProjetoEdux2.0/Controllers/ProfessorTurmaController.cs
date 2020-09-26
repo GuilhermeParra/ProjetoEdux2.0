@@ -17,6 +17,10 @@ namespace ProjetoEdux2._0.Controllers
         private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
 
         // GET: api/ProfessorTurma
+        /// <summary>
+        /// exclui um professor
+        /// </summary>
+        /// <returns>retorna todos os professores</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProfessorTurma>>> GetProfessorTurma()
         {
@@ -24,6 +28,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // GET: api/ProfessorTurma/5
+        /// <summary>
+        /// mostra um unico professor
+        /// </summary>
+        /// <param name="id">id do professorTurma</param>
+        /// <returns>retorna um professorTurma</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ProfessorTurma>> GetProfessorTurma(Guid id)
         {
@@ -40,6 +49,12 @@ namespace ProjetoEdux2._0.Controllers
         // PUT: api/ProfessorTurma/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// altera determinado professor
+        /// </summary>
+        /// <param name="id">id do professorTurma</param>
+        /// <param name="professorTurma">objeto com alterações</param>
+        /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProfessorTurma(Guid id, ProfessorTurma professorTurma)
         {
@@ -72,6 +87,11 @@ namespace ProjetoEdux2._0.Controllers
         // POST: api/ProfessorTurma
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// cadastra um professor
+        /// </summary>
+        /// <param name="professorTurma">nome do professor</param>
+        /// <returns>retorna um objeto cadastrado</returns>
         [HttpPost]
         public async Task<ActionResult<ProfessorTurma>> PostProfessorTurma(ProfessorTurma professorTurma)
         {
@@ -82,6 +102,11 @@ namespace ProjetoEdux2._0.Controllers
         }
 
         // DELETE: api/ProfessorTurma/5
+        /// <summary>
+        /// exclui um professor
+        /// </summary>
+        /// <param name="id">id do professorTurma</param>
+        /// <returns>retorna uma categoria</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult<ProfessorTurma>> DeleteProfessorTurma(Guid id)
         {

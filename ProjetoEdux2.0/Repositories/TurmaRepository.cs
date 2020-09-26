@@ -11,6 +11,16 @@ namespace ProjetoEdux2._0.Repositories
     public class TurmaRepository : ITurma
     {
         private readonly ProjetoSenaiiContext _ctx;
+
+        public TurmaRepository()
+        {
+            _ctx = new ProjetoSenaiiContext();
+        }
+
+        /// <summary>
+        /// Adiciona uma turma
+        /// </summary>
+        /// <param name="turma">Objeto de Adicionar</param>
         public void Adicionar(Turma turma)
         {
             try
@@ -27,6 +37,11 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Busca a turma pelo Id
+        /// </summary>
+        /// <param name="id">Objeto de BuscarPorId</param>
+        /// <returns>A turma buscada</returns>
         public Turma BuscarPorId(Guid id)
         {
             try
@@ -40,6 +55,11 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Busca a turma pelo nome
+        /// </summary>
+        /// <param name="descricao">Objeto de BuscarPorNome</param>
+        /// <returns>A turma buscada</returns>
         public List<Turma> BuscarPorNome(string descricao)
         {
             try
@@ -53,6 +73,10 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Edita a turma cadastrada
+        /// </summary>
+        /// <param name="turma">Objeto de Editar</param>
         public void Editar(Turma turma)
         {
             try
@@ -82,6 +106,10 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Lista as turmas cadastradas
+        /// </summary>
+        /// <returns>A lista de turmas</returns>
         public List<Turma> Listar()
         {
             try
@@ -94,6 +122,10 @@ namespace ProjetoEdux2._0.Repositories
             }
         }
 
+        /// <summary>
+        /// Remove a turma pelo id
+        /// </summary>
+        /// <param name="id">Objeto de Remover</param>
         public void Remover(Guid id)
         {
             try
