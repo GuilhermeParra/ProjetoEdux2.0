@@ -9,7 +9,8 @@ namespace ProjetoEdux2._0.Interfaces
     interface ICurtida
     {
         List<Curtida> Listar();
-        Curtida BuscarPorId(Guid id);
+        void Editar(Curtida curtida);
+        Curtida BuscarPorId(Guid Id);
         void Adicionar(Curtida curtida);
         void Remover(Guid id);
     }

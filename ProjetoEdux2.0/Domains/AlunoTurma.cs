@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace ProjetoEdux2._0.Domains
@@ -15,6 +16,7 @@ namespace ProjetoEdux2._0.Domains
         public Guid? IdUsuario { get; set; }
         public Guid? IdTurma { get; set; }
 
+        
         public virtual Turma IdTurmaNavigation { get; set; }
         public virtual Usuario IdUsuarioNavigation { get; set; }
         public virtual ICollection<ObjetivoAluno> ObjetivoAluno { get; set; }

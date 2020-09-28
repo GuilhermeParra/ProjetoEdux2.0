@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
+using ProjetoEdux2._0.Interfaces;
+using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
@@ -14,11 +16,11 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class CurtidaController : ControllerBase
     {
-        private readonly ProjetoSenaiiContext _context;
+        private readonly ICurtida _curtidaRepository;
 
-        public CurtidaController(ProjetoSenaiiContext context)
+        public CurtidaController()
         {
-            _context = context;
+           _curtidaRepository = new CurtidaRepository();
         }
 
         // GET: api/Curtida
@@ -27,9 +29,9 @@ namespace ProjetoEdux2._0.Controllers
         /// </summary>
         /// <returns>retorna todas as curtidas cadastradas</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Curtida>>> GetCurtida()
+        public ActionResult<IEnumerable<Curtida>> GetCurtida()
         {
-            return await _context.Curtida.ToListAsync();
+            return _curtidaRepository.Listar();
         }
 
         // GET: api/Curtida/5
@@ -39,9 +41,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id da curtida</param>
         /// <returns>retorna uma curtida</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Curtida>> GetCurtida(Guid id)
+        public ActionResult<Curtida> GetCurtida(Guid id)
         {
-            var curtida = await _context.Curtida.FindAsync(id);
+            var curtida = _curtidaRepository.BuscarPorId(id);
 
             if (curtida == null)
             {
@@ -61,32 +63,20 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="curtida">objeto com alterações</param>
         /// <returns>retorna a curtida alterada</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCurtida(Guid id, Curtida curtida)
+        public IActionResult Put(Guid id, Curtida curtida)
         {
-            if (id != curtida.IdCurtida)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(curtida).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CurtidaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                //Edita o produto
+                _curtidaRepository.Editar(curtida);
 
-            return NoContent();
+                //Retorna Ok com os dados do produto
+                return Ok(curtida);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST: api/Curtida
@@ -98,12 +88,21 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="curtida">nome da curtida</param>
         /// <returns>retorna o objeto cadastrado</returns>
         [HttpPost]
-        public async Task<ActionResult<Curtida>> PostCurtida(Curtida curtida)
+        public IActionResult Post([FromForm] Curtida curtida)
         {
-            _context.Curtida.Add(curtida);
-            await _context.SaveChangesAsync();
+            try
+            {
+               
+                
+                _curtidaRepository.Adicionar(curtida);
 
-            return CreatedAtAction("GetCurtida", new { id = curtida.IdCurtida }, curtida);
+                
+                return Ok(curtida);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Curtida/5
@@ -113,23 +112,28 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id da curtida</param>
         /// <returns>retorna uma curtida</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Curtida>> DeleteCurtida(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            var curtida = await _context.Curtida.FindAsync(id);
-            if (curtida == null)
+            try
             {
-                return NotFound();
+                
+                var produto = _curtidaRepository.BuscarPorId(id);
+
+                
+                if (produto == null)
+                    return NotFound();
+
+                
+                _curtidaRepository.Remover(id);
+                //Retorna Ok
+                return Ok(id);
             }
-
-            _context.Curtida.Remove(curtida);
-            await _context.SaveChangesAsync();
-
-            return curtida;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool CurtidaExists(Guid id)
-        {
-            return _context.Curtida.Any(e => e.IdCurtida == id);
-        }
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using ProjetoEdux2._0.Contexts;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
 using ProjetoEdux2._0.Interfaces;
 using System;
@@ -41,7 +42,7 @@ namespace ProjetoEdux2._0.Repositories
         /// <summary>
         /// Busca uma curtida por id
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">objeto de curtida</param>
         /// <returns>Uma curtida</returns>
         public Curtida BuscarPorId(Guid id)
         {
@@ -54,6 +55,27 @@ namespace ProjetoEdux2._0.Repositories
             catch (Exception ex)
             {
 
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Edita a curtida
+        /// </summary>
+        /// <param name="curtida">Objeto Curtida</param>
+        public void Editar(Curtida curtida)
+        {
+            try
+            {
+                Curtida curtidaTemp = BuscarPorId(curtida.IdCurtida);
+                if (curtidaTemp == null)
+                    throw new Exception("Curtida não encontrado ");
+
+
+                _ctx.SaveChanges();
+            }
+            catch(Exception ex)
+            {
                 throw new Exception(ex.Message);
             }
         }
