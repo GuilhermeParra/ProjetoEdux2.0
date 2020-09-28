@@ -54,6 +54,11 @@ namespace ProjetoEdux2._0
                         Url = new Uri("https://example.com/license"),
                     }
                 });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
             // JWT
@@ -94,7 +99,7 @@ namespace ProjetoEdux2._0
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Edux V1");
             });
 
             app.UseSwagger();

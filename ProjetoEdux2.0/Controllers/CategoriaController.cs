@@ -101,6 +101,22 @@ namespace ProjetoEdux2._0.Controllers
             return CreatedAtAction("GetCategoria", new { id = categoria.IdCategoria }, categoria);
         }
 
+        /*[HttpPost]
+        public IActionResult Post([FromBody]Categoria novaCategoria)
+        {
+            Categoria categoria = new Categoria()
+            {
+                Tipo = novaCategoria.Tipo,
+                Objetivo = novaCategoria.Objetivo
+            };
+            _context.Add(categoria);
+
+            _context.SaveChangesAsync();
+
+            return StatusCode(201);
+            
+        }*/
+
         // DELETE: api/Categoria/5
         /// <summary>
         /// exclui uma categoria

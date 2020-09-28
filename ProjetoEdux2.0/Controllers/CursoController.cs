@@ -103,7 +103,7 @@ namespace ProjetoEdux2._0.Controllers
 
         // DELETE: api/Curso/5
         /// <summary>
-        /// Deleta o
+        /// Deleta o curso
         /// </summary>
         /// <param name="id"></param>
         /// <returns>Retorna o objeto deletado</returns>
