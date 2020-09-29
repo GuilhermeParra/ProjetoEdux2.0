@@ -14,6 +14,8 @@ namespace ProjetoEdux2._0.Interfaces
 		//Busca um perfil expecífico por id
 		Perfil BuscarPorId(Guid id);
 
+		void Adiconar(Perfil perfil);
+
 		// Edita um perfil
 		void Editar(Perfil perfil);
 

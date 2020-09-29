@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
+using ProjetoEdux2._0.Interfaces;
+using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
@@ -14,7 +16,12 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class PerfilController : ControllerBase
     {
-        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
+        private readonly IPerfil _perfiRepository;
+
+        public PerfilController()
+        {
+            _perfiRepository = new PerfilRepository();
+        }
 
         // GET: api/Perfil
         /// <summary>
@@ -22,9 +29,9 @@ namespace ProjetoEdux2._0.Controllers
         /// </summary>
         /// <returns>retorna todas os perfis cadastrados</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Perfil>>> GetPerfil()
+        public ActionResult<IEnumerable<Perfil>> GetPerfil()
         {
-            return await _context.Perfil.ToListAsync();
+            return _perfiRepository.Listar();
         }
 
         // GET: api/Perfil/5
@@ -34,9 +41,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id do perfil</param>
         /// <returns>retorna um perfil</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Perfil>> GetPerfil(Guid id)
+        public ActionResult<Perfil> GetPerfil(Guid id)
         {
-            var perfil = await _context.Perfil.FindAsync(id);
+            var perfil = _perfiRepository.BuscarPorId(id);
 
             if (perfil == null)
             {
@@ -56,32 +63,26 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="perfil">objeto com alterações</param>
         /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPerfil(Guid id, Perfil perfil)
+        public IActionResult PutPerfil(Guid id, Perfil perfil)
         {
             if (id != perfil.IdPerfil)
             {
                 return BadRequest();
             }
 
-            _context.Entry(perfil).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                _perfiRepository.Editar(perfil);
+                return Ok(perfil);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!PerfilExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
+            
         }
 
         // POST: api/Perfil
@@ -93,10 +94,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="perfil">nome do perfil</param>
         /// <returns>retorna o objeto alterado</returns>
         [HttpPost]
-        public async Task<ActionResult<Perfil>> PostPerfil(Perfil perfil)
+        public IActionResult PostPerfil([FromForm] Perfil perfil)
         {
-            _context.Perfil.Add(perfil);
-            await _context.SaveChangesAsync();
+            _perfiRepository.Adiconar(perfil);
 
             return CreatedAtAction("GetPerfil", new { id = perfil.IdPerfil }, perfil);
         }
@@ -108,23 +108,29 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id do perfil</param>
         /// <returns>retorna um perfil</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Perfil>> DeletePerfil(Guid id)
+        public ActionResult<Perfil> DeletePerfil(Guid id)
         {
-            var perfil = await _context.Perfil.FindAsync(id);
-            if (perfil == null)
+            try
             {
-                return NotFound();
+                var perfil = _perfiRepository.BuscarPorId(id);
+                if (perfil == null)
+                {
+                    return NotFound();
+                }
+
+                _perfiRepository.Remover(id);
+
+                return Ok(perfil);
             }
-
-            _context.Perfil.Remove(perfil);
-            await _context.SaveChangesAsync();
-
-            return perfil;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool PerfilExists(Guid id)
+        /*private bool PerfilExists(Guid id)
         {
             return _context.Perfil.Any(e => e.IdPerfil == id);
-        }
+        }*/
     }
 }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
+using ProjetoEdux2._0.Interfaces;
+using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
@@ -14,7 +16,12 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class CursoController : ControllerBase
     {
-        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
+        private readonly ICurso _cursoRepository;
+
+        public CursoController()
+        {
+            _cursoRepository = new CursoRepository();
+        }
 
         // GET: api/Curso
         /// <summary>
@@ -22,9 +29,9 @@ namespace ProjetoEdux2._0.Controllers
         /// </summary>
         /// <returns>retorna os cursos cadastrados</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Curso>>> GetCurso()
+        public ActionResult<IEnumerable<Curso>> GetCurso()
         {
-            return await _context.Curso.ToListAsync();
+            return _cursoRepository.Listar();
         }
 
         // GET: api/Curso/5
@@ -34,9 +41,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id do curso</param>
         /// <returns>retorna um curso</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Curso>> GetCurso(Guid id)
+        public ActionResult<Curso> GetCurso(Guid id)
         {
-            var curso = await _context.Curso.FindAsync(id);
+            var curso = _cursoRepository.BuscarPorId(id);
 
             if (curso == null)
             {
@@ -56,47 +63,40 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="curso">Objeto com alterações</param>
         /// <returns>O curso editado</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCurso(Guid id, Curso curso)
+        public IActionResult PutCurso(Guid id, Curso curso)
         {
             if (id != curso.IdCurso)
             {
                 return BadRequest();
             }
 
-            _context.Entry(curso).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                _cursoRepository.Editar(curso);
+                return Ok(curso);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!CursoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
+            
         }
 
         // POST: api/Curso
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         /// <summary>
-        /// cadastra um novo cursp
+        /// cadastra um novo curso
         /// </summary>
         /// <param name="curso">Objeto com alterações</param>
         /// <returns>retorna o objeto cadastrado</returns>
         [HttpPost]
-        public async Task<ActionResult<Curso>> PostCurso(Curso curso)
+        public IActionResult PostCurso([FromForm] Curso curso)
         {
-            _context.Curso.Add(curso);
-            await _context.SaveChangesAsync();
+            _cursoRepository.Adicionar(curso);
 
             return CreatedAtAction("GetCurso", new { id = curso.IdCurso }, curso);
         }
@@ -108,23 +108,26 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id"></param>
         /// <returns>Retorna o objeto deletado</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Curso>> DeleteCurso(Guid id)
+        public ActionResult<Curso> DeleteCurso(Guid id)
         {
-            var curso = await _context.Curso.FindAsync(id);
-            if (curso == null)
+            try
             {
-                return NotFound();
+                var curso = _cursoRepository.BuscarPorId(id);
+                if (curso == null)
+                {
+                    return NotFound();
+                }
+
+                _cursoRepository.Remover(id);
+
+                return Ok(curso);
             }
-
-            _context.Curso.Remove(curso);
-            await _context.SaveChangesAsync();
-
-            return curso;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
-        private bool CursoExists(Guid id)
-        {
-            return _context.Curso.Any(e => e.IdCurso == id);
-        }
+       
     }
 }

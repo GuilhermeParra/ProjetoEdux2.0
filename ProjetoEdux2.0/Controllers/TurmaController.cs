@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
+using ProjetoEdux2._0.Interfaces;
+using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
@@ -14,7 +16,12 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class TurmaController : ControllerBase
     {
-        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
+        private readonly ITurma _turmaRepository;
+
+        public TurmaController()
+        {
+           _turmaRepository = new TurmaRepository();
+        }
 
         // GET: api/Turma
         /// <summary>
@@ -22,9 +29,9 @@ namespace ProjetoEdux2._0.Controllers
         /// </summary>
         /// <returns>retorna todas as turmas cadastradas</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Turma>>> GetTurma()
+        public ActionResult<IEnumerable<Turma>> GetTurma()
         {
-            return await _context.Turma.ToListAsync();
+            return _turmaRepository.Listar();
         }
 
         // GET: api/Turma/5
@@ -34,9 +41,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id da turma</param>
         /// <returns>retorna uma turma</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Turma>> GetTurma(Guid id)
+        public ActionResult<Turma> GetTurma(Guid id)
         {
-            var turma = await _context.Turma.FindAsync(id);
+            var turma = _turmaRepository.BuscarPorId(id);
 
             if (turma == null)
             {
@@ -56,32 +63,26 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="turma">objeto com alterações</param>
         /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTurma(Guid id, Turma turma)
+        public IActionResult PutTurma(Guid id, Turma turma)
         {
             if (id != turma.IdTurma)
             {
                 return BadRequest();
             }
 
-            _context.Entry(turma).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                _turmaRepository.Editar(turma);
+                return Ok(turma);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!TurmaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
+            
         }
 
         // POST: api/Turma
@@ -93,10 +94,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="turma">nome de turma</param>
         /// <returns>retorna objeto cadastrado</returns>
         [HttpPost]
-        public async Task<ActionResult<Turma>> PostTurma(Turma turma)
+        public IActionResult PostTurma([FromForm]Turma turma)
         {
-            _context.Turma.Add(turma);
-            await _context.SaveChangesAsync();
+            _turmaRepository.Adicionar(turma);
 
             return CreatedAtAction("GetTurma", new { id = turma.IdTurma }, turma);
         }
@@ -108,23 +108,31 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id da turma</param>
         /// <returns>retorna uma turma</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Turma>> DeleteTurma(Guid id)
+        public ActionResult<Turma> DeleteTurma(Guid id)
         {
-            var turma = await _context.Turma.FindAsync(id);
-            if (turma == null)
+            try
             {
-                return NotFound();
+
+
+                var turma = _turmaRepository.BuscarPorId(id);
+                if (turma == null)
+                {
+                    return NotFound();
+                }
+
+                _turmaRepository.Remover(id);
+
+                return Ok(turma);
             }
-
-            _context.Turma.Remove(turma);
-            await _context.SaveChangesAsync();
-
-            return turma;
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         
-        private bool TurmaExists(Guid id)
+        /*private bool TurmaExists(Guid id)
         {
             return _context.Turma.Any(e => e.IdTurma == id);
-        }
+        }*/
     }
 }

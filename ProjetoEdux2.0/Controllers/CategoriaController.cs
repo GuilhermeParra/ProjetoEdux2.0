@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
+using ProjetoEdux2._0.Interfaces;
+using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
@@ -14,7 +16,12 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class CategoriaController : ControllerBase
     {
-        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
+        private readonly ICategoria _categoriaRepository;
+
+        public CategoriaController()
+        {
+            _categoriaRepository = new CategoriaRepository();
+        }
 
         // GET: api/Categoria
         /// <summary>
@@ -22,9 +29,9 @@ namespace ProjetoEdux2._0.Controllers
         /// </summary>
         /// <returns>retorna todas as categorias cadastradas</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategoria()
+        public ActionResult<IEnumerable<Categoria>> GetCategoria()
         {
-            return await _context.Categoria.ToListAsync();
+            return _categoriaRepository.Listar();
         }
 
         // GET: api/Categoria/5
@@ -34,9 +41,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id da categoria</param>
         /// <returns>retorna uma categoria</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> GetCategoria(Guid id)
+        public ActionResult<Categoria> GetCategoria(Guid id)
         {
-            var categoria = await _context.Categoria.FindAsync(id);
+            var categoria = _categoriaRepository.BuscarPorId(id);
 
             if (categoria == null)
             {
@@ -56,32 +63,27 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="categoria">objeto com alteraçoes</param>
         /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategoria(Guid id, Categoria categoria)
+        public IActionResult PutCategoria(Guid id, Categoria categoria)
         {
             if (id != categoria.IdCategoria)
             {
                 return BadRequest();
             }
 
-            _context.Entry(categoria).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                _categoriaRepository.Editar(categoria);
+
+                return Ok(categoria);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!CategoriaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
+            
         }
 
         // POST: api/Categoria
@@ -93,10 +95,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="categoria">nome da categoria</param>
         /// <returns>retorna objeto cadastrado</returns>
         [HttpPost]
-        public async Task<ActionResult<Categoria>> PostCategoria(Categoria categoria)
+        public IActionResult PostCategoria([FromForm] Categoria categoria)
         {
-            _context.Categoria.Add(categoria);
-            await _context.SaveChangesAsync();
+            _categoriaRepository.Adicionar(categoria);
 
             return CreatedAtAction("GetCategoria", new { id = categoria.IdCategoria }, categoria);
         }
@@ -124,23 +125,26 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id da categoria</param>
         /// <returns>retorna uma categoria</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Categoria>> DeleteCategoria(Guid id)
+        public ActionResult<Categoria> DeleteCategoria(Guid id)
         {
-            var categoria = await _context.Categoria.FindAsync(id);
-            if (categoria == null)
+            try
             {
-                return NotFound();
+                var categoria = _categoriaRepository.BuscarPorId(id);
+                if (categoria == null)
+                {
+                    return NotFound();
+                }
+
+                _categoriaRepository.Remover(id);
+
+                return Ok(categoria);
             }
-
-            _context.Categoria.Remove(categoria);
-            await _context.SaveChangesAsync();
-
-            return categoria;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool CategoriaExists(Guid id)
-        {
-            return _context.Categoria.Any(e => e.IdCategoria == id);
-        }
+        
     }
 }

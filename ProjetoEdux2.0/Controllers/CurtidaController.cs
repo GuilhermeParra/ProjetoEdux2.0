@@ -65,12 +65,17 @@ namespace ProjetoEdux2._0.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(Guid id, Curtida curtida)
         {
+
+            if(id != curtida.IdCurtida)
+            {
+                return BadRequest();
+            }
             try
             {
-                //Edita o produto
+                //Edita a curtida
                 _curtidaRepository.Editar(curtida);
 
-                //Retorna Ok com os dados do produto
+                //Retorna Ok com os dados da curtida
                 return Ok(curtida);
             }
             catch (Exception ex)
@@ -117,10 +122,10 @@ namespace ProjetoEdux2._0.Controllers
             try
             {
                 
-                var produto = _curtidaRepository.BuscarPorId(id);
+                var curtida = _curtidaRepository.BuscarPorId(id);
 
                 
-                if (produto == null)
+                if (curtida == null)
                     return NotFound();
 
                 

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
+using ProjetoEdux2._0.Interfaces;
+using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
@@ -14,20 +16,34 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class AlunoTurmaController : ControllerBase
     {
-        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
+        private readonly IAlunoTurma _alunoRepository;
+
+        public AlunoTurmaController()
+        {
+            _alunoRepository = new AlunoTurmaRepository();
+        }
 
         // GET: api/AlunoTurma
+        /// <summary>
+        /// Busca todos os alunos
+        /// </summary>
+        /// <returns>Uma lista de alunos</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AlunoTurma>>> GetAlunoTurma()
+        public ActionResult<IEnumerable<AlunoTurma>> GetAlunoTurma()
         {
-            return await _context.AlunoTurma.ToListAsync();
+            return _alunoRepository.Listar();
         }
 
         // GET: api/AlunoTurma/5
+        /// <summary>
+        /// Procura um aluno pelo Id
+        /// </summary>
+        /// <param name="id">Objeto de AlunoTurma</param>
+        /// <returns>O aluno procurado</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<AlunoTurma>> GetAlunoTurma(Guid id)
+        public ActionResult<AlunoTurma> GetAlunoTurma(Guid id)
         {
-            var alunoTurma = await _context.AlunoTurma.FindAsync(id);
+            var alunoTurma = _alunoRepository.BuscarPorId(id);
 
             if (alunoTurma == null)
             {
@@ -40,66 +56,79 @@ namespace ProjetoEdux2._0.Controllers
         // PUT: api/AlunoTurma/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Edita as informações do aluno
+        /// </summary>
+        /// <param name="id">Objeto de AlunoTurma</param>
+        /// <param name="alunoTurma">Objeto com alterações</param>
+        /// <returns>A informação editada</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAlunoTurma(Guid id, AlunoTurma alunoTurma)
+        public IActionResult PutAlunoTurma(Guid id, AlunoTurma alunoTurma)
         {
             if (id != alunoTurma.IdAlunoTurma)
             {
                 return BadRequest();
             }
 
-            _context.Entry(alunoTurma).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                _alunoRepository.Editar(alunoTurma);
+                return Ok(alunoTurma);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!AlunoTurmaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
+            
         }
 
         // POST: api/AlunoTurma
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /// <summary>
+        /// Adiciona um novo aluno
+        /// </summary>
+        /// <param name="alunoTurma">Objeto adicionado</param>
+        /// <returns>O aluno novo</returns>
         [HttpPost]
-        public async Task<ActionResult<AlunoTurma>> PostAlunoTurma(AlunoTurma alunoTurma)
+        public IActionResult PostAlunoTurma([FromForm] AlunoTurma alunoTurma)
         {
-            _context.AlunoTurma.Add(alunoTurma);
-            await _context.SaveChangesAsync();
+            _alunoRepository.Adicionar(alunoTurma);
+
 
             return CreatedAtAction("GetAlunoTurma", new { id = alunoTurma.IdAlunoTurma }, alunoTurma);
         }
 
         // DELETE: api/AlunoTurma/5
+        /// <summary>
+        /// Deleta o aluno cadastrado
+        /// </summary>
+        /// <param name="id">Objeto de AlunoTurma</param>
+        /// <returns>O aluno removido</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<AlunoTurma>> DeleteAlunoTurma(Guid id)
+        public ActionResult<AlunoTurma> DeleteAlunoTurma(Guid id)
         {
-            var alunoTurma = await _context.AlunoTurma.FindAsync(id);
-            if (alunoTurma == null)
+            try
             {
-                return NotFound();
+                var alunoTurma = _alunoRepository.BuscarPorId(id);
+                if (alunoTurma == null)
+                {
+                    return NotFound();
+                }
+
+                _alunoRepository.Remover(id);
+
+                return Ok(alunoTurma);
             }
-
-            _context.AlunoTurma.Remove(alunoTurma);
-            await _context.SaveChangesAsync();
-
-            return alunoTurma;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool AlunoTurmaExists(Guid id)
-        {
-            return _context.AlunoTurma.Any(e => e.IdAlunoTurma == id);
-        }
+        
     }
 }

@@ -47,9 +47,9 @@ namespace ProjetoEdux2._0.Controllers
             // Definimos nossas Claims (dados da sessão) para poderem ser capturadas
             // a qualquer momento enquanto o Token for ativo
             var claims = new[] {
-        new Claim(JwtRegisteredClaimNames.NameId, userInfo.Nome),
-        new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.NameId, userInfo.Nome),
+                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Role, userInfo.IdPerfilNavigation.Permissao)
     };
 

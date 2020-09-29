@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
+using ProjetoEdux2._0.Interfaces;
+using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
@@ -14,7 +16,12 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class ProfessorTurmaController : ControllerBase
     {
-        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
+        private readonly IProfessorTurma _profeTurmaRepository;
+
+        public ProfessorTurmaController()
+        {
+            _profeTurmaRepository = new ProfessorTurmaRepository();
+        }
 
         // GET: api/ProfessorTurma
         /// <summary>
@@ -22,9 +29,9 @@ namespace ProjetoEdux2._0.Controllers
         /// </summary>
         /// <returns>retorna todos os professores</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProfessorTurma>>> GetProfessorTurma()
+        public ActionResult<IEnumerable<ProfessorTurma>> GetProfessorTurma()
         {
-            return await _context.ProfessorTurma.ToListAsync();
+            return _profeTurmaRepository.Listar();
         }
 
         // GET: api/ProfessorTurma/5
@@ -34,9 +41,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id do professorTurma</param>
         /// <returns>retorna um professorTurma</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProfessorTurma>> GetProfessorTurma(Guid id)
+        public ActionResult<ProfessorTurma> GetProfessorTurma(Guid id)
         {
-            var professorTurma = await _context.ProfessorTurma.FindAsync(id);
+            var professorTurma = _profeTurmaRepository.BuscarPorId(id);
 
             if (professorTurma == null)
             {
@@ -56,32 +63,25 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="professorTurma">objeto com alterações</param>
         /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProfessorTurma(Guid id, ProfessorTurma professorTurma)
+        public IActionResult PutProfessorTurma(Guid id, ProfessorTurma professorTurma)
         {
             if (id != professorTurma.IdProfessorTurma)
             {
                 return BadRequest();
             }
 
-            _context.Entry(professorTurma).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                _profeTurmaRepository.Editar(professorTurma);
+                return Ok(professorTurma);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!ProfessorTurmaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
         }
 
         // POST: api/ProfessorTurma
@@ -93,10 +93,11 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="professorTurma">nome do professor</param>
         /// <returns>retorna um objeto cadastrado</returns>
         [HttpPost]
-        public async Task<ActionResult<ProfessorTurma>> PostProfessorTurma(ProfessorTurma professorTurma)
+        public IActionResult PostProfessorTurma([FromForm]ProfessorTurma professorTurma)
         {
-            _context.ProfessorTurma.Add(professorTurma);
-            await _context.SaveChangesAsync();
+            
+            _profeTurmaRepository.Adicionar(professorTurma);
+
 
             return CreatedAtAction("GetProfessorTurma", new { id = professorTurma.IdProfessorTurma }, professorTurma);
         }
@@ -108,23 +109,29 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id do professorTurma</param>
         /// <returns>retorna uma categoria</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ProfessorTurma>> DeleteProfessorTurma(Guid id)
+        public ActionResult<ProfessorTurma> DeleteProfessorTurma(Guid id)
         {
-            var professorTurma = await _context.ProfessorTurma.FindAsync(id);
-            if (professorTurma == null)
+            try
             {
-                return NotFound();
+                var professorTurma = _profeTurmaRepository.BuscarPorId(id);
+                if (professorTurma == null)
+                {
+                    return NotFound();
+                }
+
+                _profeTurmaRepository.Remover(id);
+
+                return Ok(professorTurma);
             }
-
-            _context.ProfessorTurma.Remove(professorTurma);
-            await _context.SaveChangesAsync();
-
-            return professorTurma;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool ProfessorTurmaExists(Guid id)
+        /*private bool ProfessorTurmaExists(Guid id)
         {
             return _context.ProfessorTurma.Any(e => e.IdProfessorTurma == id);
-        }
+        }*/
     }
 }

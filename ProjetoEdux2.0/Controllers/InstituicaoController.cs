@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
+using ProjetoEdux2._0.Interfaces;
+using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
@@ -14,7 +16,12 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class InstituicaoController : ControllerBase
     {
-        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
+        private readonly IInstituicao _instituicaoRepository;
+
+        public InstituicaoController()
+        {
+            _instituicaoRepository = new InstituicaoRepository();
+        }
 
         // GET: api/Instituicao
         /// <summary>
@@ -22,9 +29,9 @@ namespace ProjetoEdux2._0.Controllers
         /// </summary>
         /// <returns>retorna todas as instituições</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Instituicao>>> GetInstituicao()
+        public ActionResult<IEnumerable<Instituicao>> GetInstituicao()
         {
-            return await _context.Instituicao.ToListAsync();
+            return _instituicaoRepository.Listar();
         }
 
         // GET: api/Instituicao/5
@@ -34,9 +41,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id da instituição</param>
         /// <returns>retorna uma instuituição</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Instituicao>> GetInstituicao(Guid id)
+        public ActionResult<Instituicao> GetInstituicao(Guid id)
         {
-            var instituicao = await _context.Instituicao.FindAsync(id);
+            var instituicao = _instituicaoRepository.BuscarPorId(id);
 
             if (instituicao == null)
             {
@@ -56,32 +63,26 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="instituicao">Objeto com alterações</param>
         /// <returns>retorna produto alterado</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutInstituicao(Guid id, Instituicao instituicao)
+        public IActionResult PutInstituicao(Guid id, Instituicao instituicao)
         {
             if (id != instituicao.IdInstituicao)
             {
                 return BadRequest();
             }
 
-            _context.Entry(instituicao).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                _instituicaoRepository.Editar(instituicao);
+                return Ok(instituicao);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!InstituicaoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
+            
         }
 
         // POST: api/Instituicao
@@ -93,10 +94,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="instituicao">Nome da insituição</param>
         /// <returns>retorna o objeto cadastrado</returns>
         [HttpPost]
-        public async Task<ActionResult<Instituicao>> PostInstituicao(Instituicao instituicao)
+        public IActionResult PostInstituicao([FromForm] Instituicao instituicao)
         {
-            _context.Instituicao.Add(instituicao);
-            await _context.SaveChangesAsync();
+            _instituicaoRepository.Adicionar(instituicao);
 
             return CreatedAtAction("GetInstituicao", new { id = instituicao.IdInstituicao }, instituicao);
         }
@@ -108,23 +108,26 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">id da instituição</param>
         /// <returns>retorna uma insituição</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Instituicao>> DeleteInstituicao(Guid id)
+        public ActionResult<Instituicao> DeleteInstituicao(Guid id)
         {
-            var instituicao = await _context.Instituicao.FindAsync(id);
-            if (instituicao == null)
+            try
             {
-                return NotFound();
+                var instituicao = _instituicaoRepository.BuscarPorId(id);
+                if (instituicao == null)
+                {
+                    return NotFound();
+                }
+
+                _instituicaoRepository.Remover(id);
+
+                return Ok(instituicao);
             }
-
-            _context.Instituicao.Remove(instituicao);
-            await _context.SaveChangesAsync();
-
-            return instituicao;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool InstituicaoExists(Guid id)
-        {
-            return _context.Instituicao.Any(e => e.IdInstituicao == id);
-        }
+        
     }
 }

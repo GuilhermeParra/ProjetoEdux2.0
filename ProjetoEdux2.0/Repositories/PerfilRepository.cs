@@ -101,6 +101,22 @@ namespace ProjetoEdux2._0.Repositories
                 throw new Exception(ex.Message);
             }
         }
+
+        public void Adiconar(Perfil perfil)
+        {
+            try
+            {
+                _ctx.Set<Perfil>().Update(perfil);
+
+                //Salva as alterações
+                _ctx.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         #endregion
     }
 }

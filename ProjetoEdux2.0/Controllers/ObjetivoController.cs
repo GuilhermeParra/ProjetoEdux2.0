@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoEdux2._0.Contexts;
 using ProjetoEdux2._0.Domains;
+using ProjetoEdux2._0.Interfaces;
+using ProjetoEdux2._0.Repositories;
 
 namespace ProjetoEdux2._0.Controllers
 {
@@ -14,7 +16,12 @@ namespace ProjetoEdux2._0.Controllers
     [ApiController]
     public class ObjetivoController : ControllerBase
     {
-        private ProjetoSenaiiContext _context = new ProjetoSenaiiContext();
+        private readonly IObjetivo _objetivoRepository;
+
+        public ObjetivoController()
+        {
+            _objetivoRepository = new ObjetivoRepository();
+        }
 
 
         // GET: api/Objetivo
@@ -23,9 +30,9 @@ namespace ProjetoEdux2._0.Controllers
         /// </summary>
         /// <returns>retorna todos os objetivos</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Objetivo>>> GetObjetivo()
+        public ActionResult<IEnumerable<Objetivo>> GetObjetivo()
         {
-            return await _context.Objetivo.ToListAsync();
+            return _objetivoRepository.Listar();
         }
 
         // GET: api/Objetivo/5
@@ -35,9 +42,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">ido do objetivo</param>
         /// <returns>retorna um unico objetivo</returns>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Objetivo>> GetObjetivo(Guid id)
+        public ActionResult<Objetivo> GetObjetivo(Guid id)
         {
-            var objetivo = await _context.Objetivo.FindAsync(id);
+            var objetivo = _objetivoRepository.BuscarPorId(id);
 
             if (objetivo == null)
             {
@@ -57,32 +64,26 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="objetivo">objetivo</param>
         /// <returns>retorna objetivo alternado</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutObjetivo(Guid id, Objetivo objetivo)
+        public IActionResult PutObjetivo(Guid id, Objetivo objetivo)
         {
             if (id != objetivo.IdObjetivo)
             {
                 return BadRequest();
             }
 
-            _context.Entry(objetivo).State = EntityState.Modified;
+            
 
             try
             {
-                await _context.SaveChangesAsync();
+                _objetivoRepository.Editar(objetivo);
+                return Ok(objetivo);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!ObjetivoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                return BadRequest(ex.Message);
+            };
 
-            return NoContent();
+            
         }
 
         // POST: api/Objetivo
@@ -94,10 +95,9 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="objetivo">objetivo</param>
         /// <returns>retorna o novo objetivo</returns>
         [HttpPost]
-        public async Task<ActionResult<Objetivo>> PostObjetivo(Objetivo objetivo)
+        public IActionResult PostObjetivo([FromForm]Objetivo objetivo)
         {
-            _context.Objetivo.Add(objetivo);
-            await _context.SaveChangesAsync();
+            _objetivoRepository.Adicionar(objetivo);
 
             return CreatedAtAction("GetObjetivo", new { id = objetivo.IdObjetivo }, objetivo);
         }
@@ -109,23 +109,29 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="id">iddo objetivo</param>
         /// <returns>retorna objetivo</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Objetivo>> DeleteObjetivo(Guid id)
+        public ActionResult<Objetivo> DeleteObjetivo(Guid id)
         {
-            var objetivo = await _context.Objetivo.FindAsync(id);
-            if (objetivo == null)
+            try
             {
-                return NotFound();
+                var objetivo = _objetivoRepository.BuscarPorId(id);
+                if (objetivo == null)
+                {
+                    return NotFound();
+                }
+
+                _objetivoRepository.Remover(id);
+
+                return Ok(objetivo);
             }
-
-            _context.Objetivo.Remove(objetivo);
-            await _context.SaveChangesAsync();
-
-            return objetivo;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool ObjetivoExists(Guid id)
+        /*private bool ObjetivoExists(Guid id)
         {
             return _context.Objetivo.Any(e => e.IdObjetivo == id);
-        }
+        }*/
     }
 }

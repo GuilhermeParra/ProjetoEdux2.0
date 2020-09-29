@@ -89,7 +89,7 @@ namespace ProjetoEdux2._0.Repositories
                 if (objetivoTemp == null)
                     throw new Exception("Objetivo não encontrado ");
 
-                ///objetivoTemp.Tipo = Objetivo.Tipo;
+                //objetivoTemp.Tipo = Objetivo.Tipo;
                 objetivoTemp.Descricao = objetivo.Descricao;
 
 
