@@ -117,10 +117,11 @@ namespace ProjetoEdux2._0.Contexts
 
                 entity.Property(e => e.IdDica).HasDefaultValueSql("(newid())");
 
-                
-                entity.Property(e => e.Imagem)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+
+
+                entity.Ignore(c => c.ImagemNova);
+
+                    
 
                 entity.Property(e => e.Texto)
                     .IsRequired()

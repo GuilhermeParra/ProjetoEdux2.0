@@ -68,7 +68,7 @@ namespace ProjetoEdux2._0.Repositories
             try
             {
                 //adiciona um objeto , pode se acionar mais de uma vez
-                _ctx.Set<Dica>().Update(dica);
+                _ctx.Set<Dica>().Add(dica);
 
 
                 //salvar no db

@@ -96,13 +96,15 @@ namespace ProjetoEdux2._0
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
+            
 
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Edux V1");
             });
 
-            app.UseSwagger();
+            app.UseStaticFiles();
+            
 
             app.UseEndpoints(endpoints =>
             {

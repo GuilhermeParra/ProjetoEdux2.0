@@ -206,7 +206,7 @@ namespace ProjetoEdux2._0.Controllers
         /// <param name="usuario">objeto adicionado</param>
         /// <returns>retorna o objeto cadastrado</returns>
         [HttpPost]
-        public IActionResult Post([FromForm] Usuario usuario)
+        public IActionResult Post([FromHeader] Usuario usuario)
         {
             usuario.Senha = Crypto.Criptografar(usuario.Senha, usuario.Email.Substring(0, 4));
             try

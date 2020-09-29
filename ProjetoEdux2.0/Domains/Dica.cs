@@ -18,8 +18,9 @@ namespace ProjetoEdux2._0.Domains
         public Guid IdDica { get; set; }
         public string Texto { get; set; }
 
+        [JsonIgnore]
         [NotMapped]
-        public IFormFile Imagem { get; set; }
+        public IFormFile ImagemNova { get; set; }
 
         public string UrlImagem { get; set; }
         public Guid? IdUsuario { get; set; }
